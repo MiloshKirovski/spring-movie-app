@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comments</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Comments</h2>
+    <form th:action="@{'/comments/' + ${eventId}}" th:method="POST" class="border p-4 rounded bg-light shadow-sm">
+        <div class="form-group">
+            <label for="comment">Enter Comment:</label>
+            <input type="text" id="comment" name="comment" class="form-control" placeholder="Write your comment here">
+        </div>
+        <input type="hidden" name="eventId" th:value="${eventId}">
+        <button type="submit" class="btn btn-success">Submit Comment</button>
+    </form>
+
+    <div class="mt-4">
+        <h4>Previous Comments</h4>
+        <div th:each="comment : ${comments}" class="border-bottom pb-2 mb-2">
+            <p>
+                <strong th:text="${comment.getUser().getName()}">User</strong>:
+                <span th:text="${comment.getComment()}">Comment</span>
+            </p>
+        </div>
+    </div>
+
+    <a th:href="@{'/events'}" class="btn btn-secondary mt-3">Return</a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

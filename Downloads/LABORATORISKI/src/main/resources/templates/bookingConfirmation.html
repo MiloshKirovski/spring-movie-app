@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking - Confirmation</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <header>
+        <h1 class="mb-4">Event Booking Confirmation</h1>
+    </header>
+
+    <th:block th:if="${booked} == false">
+        <div class="alert alert-danger" role="alert" th:text="'There was an error with your booking'"></div>
+    </th:block>
+
+    <th:block th:if="${booked} == true">
+        <table class="table table-bordered">
+            <thead class="thead-dark">
+            <tr>
+                <th colspan="2" class="text-center">Your Booking Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><strong>Attendee Name</strong></td>
+                <td><span th:text="${attendeeName}"></span></td>
+            </tr>
+            <tr>
+                <td><strong>Client IP Address</strong></td>
+                <td><span th:text="${attendeeAddress}"></span></td>
+            </tr>
+            <tr>
+                <td><strong>Booking for Event</strong></td>
+                <td><span th:text="${eventName}"></span></td>
+            </tr>
+            <tr>
+                <td><strong>Number of Tickets</strong></td>
+                <td><span th:text="${numberOfTickets}"></span></td>
+            </tr>
+            </tbody>
+        </table>
+    </th:block>
+</div>
+</body>
+</html>

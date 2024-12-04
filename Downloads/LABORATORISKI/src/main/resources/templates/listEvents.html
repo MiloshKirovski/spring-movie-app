@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Event Booking Page - Welcome and Choose an Event</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container my-4">
+    <header class="text-center">
+        <h1>Welcome to our Event Booking App</h1>
+    </header>
+    <main>
+
+        <div th:if="${error} != null" th:text="${error}"}></div>
+
+        <h2>Choose an event:</h2>
+
+        <form th:action="@{/}" th:method="POST" class="mb-4">
+            <div class="form-group">
+                <label for="text">Enter text:</label>
+                <input type="text" id="text" name="text" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="rating">Enter rating:</label>
+                <input type="number" id="rating" name="ratingParameter" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="location_id">Location:</label>
+                <select id="location_id" name="locationId" class="form-control">
+                    <option value=""></option>
+                    <option th:each="location : ${locations}"
+                            th:value="${location.getId()}"
+                            th:text="${location.getName()}">
+                    </option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </form>
+
+        <form th:action="@{/eventBooking}" th:method="POST">
+            <div class="form-group">
+                <label for="attendeeName">Enter your name:</label>
+                <input type="text" id="attendeeName" name="attendeeName" class="form-control">
+            </div>
+
+            <div th:each="event: ${events}" class="event-container mb-2">
+                <input type="radio" th:id="${event.getName()}" name="eventName" th:value="${event.getName()}" class="mr-2">
+                <label th:for="${event.getName()}"
+                       th:text="'Name: ' + ${event.getName()} + ', Description: ' + ${event.getDescription()} + ', Tickets Left: ' + ${event.getTicketLeft()} + ', Popularity: ' + ${event.getPopularityScore()} + ', Location ' + ${event.getLocation().getName()}"></label>
+
+                <a th:href="@{'/events/edit-form/{id}' (id=${event.getId()})}" class="btn btn-outline-secondary btn-sm ml-3">Edit</a>
+
+                <a th:href="@{'/events/delete/{id}' (id=${event.getId()})}" class="d-inline btn btn-outline-danger btn-sm"> Delete </a>
+
+                <a th:href="@{'/comments/{id}' (id=${event.getId()})}" class="d-inline btn btn-outline-danger btn-sm ml-3">Comments</a>
+
+            </div>
+            <a class="btn btn-primary" th:href="@{'/events/add'}">ADD EVENT</a>
+
+            <h2>Choose number of tickets:</h2>
+            <div class="form-group">
+                <input type="number" name="numberTickets" min="1" max="10" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+        <br />
+    </main>
+</div>
+</body>
+</html>
