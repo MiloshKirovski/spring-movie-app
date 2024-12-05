@@ -15,4 +15,5 @@ public interface EventService {
     Event save(Event event);
     Optional<Event> findById(Long id);
     void deleteById(Long id);
+    List<Event> findAllEvents();
 }

@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -34,6 +35,8 @@ public class EventController {
                 error = "Product was not found";
             } else if (error.equals("Wrong_Information")) {
                 error = "The provided format of information is not supported!";
+            } else {
+                error = "The event already exists!!!";
             }
             model.addAttribute("error",error);
         }
@@ -54,6 +57,13 @@ public class EventController {
                            @RequestParam String description,
                            @RequestParam String numberTickets,
                            @RequestParam String locationId) {
+        List<Event> eventList = eventService.listAll();
+
+        for(Event event : eventList) {
+            if ((Objects.equals(event.getName(), eventName)) && (event.getLocation().getId() == Long.parseLong(locationId))) {
+                return "redirect:/events?error=Event_Exists";
+            }
+        }
 
         try {
             eventService.addEvent(eventName, description,
