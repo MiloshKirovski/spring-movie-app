@@ -4,68 +4,129 @@
     <meta charset="utf-8">
     <title>Event Booking Page - Welcome and Choose an Event</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome for additional icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
-<body>
-<div class="container my-4">
-    <header class="text-center">
-        <h1>Welcome to our Event Booking App</h1>
-    </header>
-    <main>
+<body class="bg-light">
+<div class="container py-5" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h1 class="mb-0">
+                        <i class="fas fa-calendar-alt mr-2"></i>Event Booking App
+                    </h1>
+                    <div>
+                        <th:block sec:authorize="isAnonymous()">
+                            <a href="/login" class="btn btn-outline-light btn-sm">
+                                <i class="fas fa-sign-in-alt mr-1"></i>Login
+                            </a>
+                        </th:block>
+                        <th:block sec:authorize="isAuthenticated()">
+                            <a class="btn btn-outline-light btn-sm ml-2" href="/logout">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                            </a>
+                        </th:block>
+                    </div>
+                </div>
 
-        <div th:if="${error} != null" th:text="${error}"}></div>
+                <!-- Rest of the previous HTML remains the same -->
+                <div class="card-body">
+                    <!-- Error Alert -->
+                    <div th:if="${error} != null" class="alert alert-danger" th:text="${error}"></div>
 
-        <h2>Choose an event:</h2>
+                    <!-- Filter Form -->
+                    <div class="mb-4">
+                        <h2 class="h4 mb-3">Filter Events</h2>
+                        <form th:action="@{/}" th:method="POST">
+                            <div class="row">
+                                <div class="col-md-4 form-group">
+                                    <label for="text">Text</label>
+                                    <input type="text" id="text" name="text" class="form-control">
+                                </div>
+                                <div class="col-md-4 form-group">
+                                    <label for="rating">Rating</label>
+                                    <input type="number" id="rating" name="ratingParameter" class="form-control">
+                                </div>
+                                <div class="col-md-4 form-group">
+                                    <label for="location_id">Location</label>
+                                    <select id="location_id" name="locationId" class="form-control">
+                                        <option value="">Select Location</option>
+                                        <option th:each="location : ${locations}"
+                                                th:value="${location.getId()}"
+                                                th:text="${location.getName()}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Filter Events</button>
+                        </form>
+                    </div>
 
-        <form th:action="@{/}" th:method="POST" class="mb-4">
-            <div class="form-group">
-                <label for="text">Enter text:</label>
-                <input type="text" id="text" name="text" class="form-control">
+                    <!-- Event Booking Form -->
+                    <form th:action="@{/eventBooking}" th:method="POST">
+                        <h2 class="h4 mb-3">Available Events</h2>
+
+                        <div class="form-group">
+                            <label for="attendeeName">Your Name</label>
+                            <input type="text" id="attendeeName" name="attendeeName" class="form-control" required>
+                        </div>
+
+                        <div class="list-group mb-4">
+                            <div th:each="event: ${events}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" th:id="${event.getName()}" name="eventName"
+                                               th:value="${event.getName()}" class="custom-control-input" required>
+                                        <label th:for="${event.getName()}" class="custom-control-label">
+                                            <strong th:text="${event.getName()}"></strong>
+                                        </label>
+                                    </div>
+                                    <small class="text-muted"
+                                           th:text="'Tickets Left: ' + ${event.getTicketLeft()}"></small>
+                                </div>
+                                <p class="mb-1" th:text="${event.getDescription()}"></p>
+                                <small class="text-muted"
+                                       th:text="'Popularity: ' + ${event.getPopularityScore()} + ' | Location: ' + ${event.getLocation().getName()}">
+                                </small>
+                                <div class="mt-2">
+                                    <th:block sec:authorize="hasRole('ADMIN')">
+                                        <a th:href="@{'/events/edit-form/{id}' (id=${event.getId()})}"
+                                           class="btn btn-outline-secondary btn-sm mr-2">Edit</a>
+                                        <a th:href="@{'/events/delete/{id}' (id=${event.getId()})}"
+                                           class="btn btn-outline-danger btn-sm mr-2">Delete</a>
+                                    </th:block>
+                                    <a th:href="@{'/comments/{id}' (id=${event.getId()})}"
+                                       class="btn btn-outline-info btn-sm">Comments</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="numberTickets">Number of Tickets</label>
+                            <input type="number" id="numberTickets" name="numberTickets"
+                                   min="1" max="10" class="form-control" required>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success btn-lg">Book Tickets</button>
+                        </div>
+
+                        <th:block sec:authorize="hasRole('ADMIN')">
+                            <div class="text-center mt-3">
+                                <a class="btn btn-primary" th:href="@{'/events/add'}">Add New Event</a>
+                            </div>
+                        </th:block>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="rating">Enter rating:</label>
-                <input type="number" id="rating" name="ratingParameter" class="form-control">
-            </div>
-            <div class="form-group">
-                <label for="location_id">Location:</label>
-                <select id="location_id" name="locationId" class="form-control">
-                    <option value=""></option>
-                    <option th:each="location : ${locations}"
-                            th:value="${location.getId()}"
-                            th:text="${location.getName()}">
-                    </option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Filter</button>
-        </form>
-
-        <form th:action="@{/eventBooking}" th:method="POST">
-            <div class="form-group">
-                <label for="attendeeName">Enter your name:</label>
-                <input type="text" id="attendeeName" name="attendeeName" class="form-control">
-            </div>
-
-            <div th:each="event: ${events}" class="event-container mb-2">
-                <input type="radio" th:id="${event.getName()}" name="eventName" th:value="${event.getName()}" class="mr-2">
-                <label th:for="${event.getName()}"
-                       th:text="'Name: ' + ${event.getName()} + ', Description: ' + ${event.getDescription()} + ', Tickets Left: ' + ${event.getTicketLeft()} + ', Popularity: ' + ${event.getPopularityScore()} + ', Location ' + ${event.getLocation().getName()}"></label>
-
-                <a th:href="@{'/events/edit-form/{id}' (id=${event.getId()})}" class="btn btn-outline-secondary btn-sm ml-3">Edit</a>
-
-                <a th:href="@{'/events/delete/{id}' (id=${event.getId()})}" class="d-inline btn btn-outline-danger btn-sm"> Delete </a>
-
-                <a th:href="@{'/comments/{id}' (id=${event.getId()})}" class="d-inline btn btn-outline-danger btn-sm ml-3">Comments</a>
-
-            </div>
-            <a class="btn btn-primary" th:href="@{'/events/add'}">ADD EVENT</a>
-
-            <h2>Choose number of tickets:</h2>
-            <div class="form-group">
-                <input type="number" name="numberTickets" min="1" max="10" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-success">Submit</button>
-        </form>
-        <br />
-    </main>
+        </div>
+    </div>
 </div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

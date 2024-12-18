@@ -1,9 +1,8 @@
 package mk.finki.ukim.wp.lab.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
+import mk.finki.ukim.wp.lab.model.enumeration.Role;
 
 @Data
 @Entity
@@ -18,11 +17,15 @@ public class User {
 
     private String surname;
 
-    public User(String username, String password, String name, String surname) {
+    @Enumerated(value = EnumType.STRING)
+    private Role role;
+
+    public User(String username, String password, String name, String surname, Role role) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.surname = surname;
+        this.role = role;
     }
     public User(){}
 }

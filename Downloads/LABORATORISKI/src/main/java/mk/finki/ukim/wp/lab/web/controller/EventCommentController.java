@@ -1,12 +1,12 @@
 package mk.finki.ukim.wp.lab.web.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import mk.finki.ukim.wp.lab.model.Comment;
 import mk.finki.ukim.wp.lab.model.Event;
 import mk.finki.ukim.wp.lab.model.User;
 import mk.finki.ukim.wp.lab.service.CommentService;
 import mk.finki.ukim.wp.lab.service.EventService;
+import mk.finki.ukim.wp.lab.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +19,12 @@ public class EventCommentController {
 
     public final EventService eventService;
     public final CommentService commentService;
+    public final UserService userService;
 
-    public EventCommentController(EventService eventService, CommentService commentService) {
+    public EventCommentController(EventService eventService, CommentService commentService, UserService userService) {
         this.eventService = eventService;
         this.commentService = commentService;
+        this.userService = userService;
     }
 
     @GetMapping("/comments/{id}")
@@ -40,12 +42,14 @@ public class EventCommentController {
 
     @PostMapping("/comments/{id}")
     public String postComment(@RequestParam String comment, @PathVariable Long id, HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+        String username = request.getRemoteUser();
 
         Optional<Event> optionalEvent = this.eventService.findById(id);
-        if (optionalEvent.isPresent()) {
+        System.out.println(username + " " + optionalEvent.isPresent() + " " + userService.findByUsername(username).isPresent());
+        if (optionalEvent.isPresent() && userService.findByUsername(username).isPresent()) {
+            User user = userService.findByUsername(username).get();
             Event event = optionalEvent.get();
+
             Comment comment1 = new Comment(user, comment, event);
             commentService.addComment(comment1);
 

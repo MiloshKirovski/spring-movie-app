@@ -5,6 +5,7 @@ import mk.finki.ukim.wp.lab.model.Event;
 import mk.finki.ukim.wp.lab.model.EventBooking;
 import mk.finki.ukim.wp.lab.model.Location;
 import mk.finki.ukim.wp.lab.model.User;
+import mk.finki.ukim.wp.lab.model.enumeration.Role;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -32,7 +33,8 @@ public class DataHolder {
             events.add(new Event("name" + i, "description" + i, i, i, locations.get(i%locations.size())));
         }
 
-        users.add(new User("milosh.kirovski", "mk", "Milosh", "Kirovski"));
-        users.add(new User("riste.stojanov", "rs", "Riste", "Stojanov"));
+        users.add(new User("milosh.kirovski", "mk", "Milosh", "Kirovski", Role.ROLE_USER));
+        users.add(new User("riste.stojanov", "rs", "Riste", "Stojanov",Role.ROLE_USER));
+        users.add(new User("riste.stojanov", "rs", "Riste", "Stojanov",Role.ROLE_ADMIN));
     }
 }

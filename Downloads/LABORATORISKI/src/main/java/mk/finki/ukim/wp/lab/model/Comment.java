@@ -3,6 +3,7 @@ package mk.finki.ukim.wp.lab.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
 
 @Data
 @AllArgsConstructor
@@ -17,7 +18,7 @@ public class Comment {
 
     private String comment;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Event event;
 
     public Comment(User user, String comment, Event event) {

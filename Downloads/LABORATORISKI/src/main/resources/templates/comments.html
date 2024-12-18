@@ -3,36 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comments</title>
+    <title>Event Comments</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
-<body>
-<div class="container mt-5">
-    <h2>Comments</h2>
-    <form th:action="@{'/comments/' + ${eventId}}" th:method="POST" class="border p-4 rounded bg-light shadow-sm">
-        <div class="form-group">
-            <label for="comment">Enter Comment:</label>
-            <input type="text" id="comment" name="comment" class="form-control" placeholder="Write your comment here">
-        </div>
-        <input type="hidden" name="eventId" th:value="${eventId}">
-        <button type="submit" class="btn btn-success">Submit Comment</button>
-    </form>
+<body class="bg-light">
+<div class="container py-5" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">Comments</h2>
+                </div>
+                <div class="card-body">
+                    <th:block sec:authorize="hasRole('USER') or hasRole('ADMIN')">
+                        <form th:action="@{'/comments/' + ${eventId}}" th:method="POST">
+                            <div class="form-group">
+                                <label for="comment">Enter Comment</label>
+                                <div class="input-group">
+                                    <input type="text" id="comment" name="comment"
+                                           class="form-control"
+                                           placeholder="Share your thoughts about the event"
+                                           required>
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="fas fa-paper-plane"></i> Submit
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="eventId" th:value="${eventId}">
+                        </form>
+                    </th:block>
+                </div>
+            </div>
 
-    <div class="mt-4">
-        <h4>Previous Comments</h4>
-        <div th:each="comment : ${comments}" class="border-bottom pb-2 mb-2">
-            <p>
-                <strong th:text="${comment.getUser().getName()}">User</strong>:
-                <span th:text="${comment.getComment()}">Comment</span>
-            </p>
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h4 class="mb-0">Previous Comments</h4>
+                </div>
+                <div class="card-body">
+                    <div th:if="${comments.isEmpty()}" class="alert alert-info text-center">
+                        No comments yet. Be the first to comment!
+                    </div>
+                    <div th:each="comment : ${comments}" class="media mb-3 pb-3 border-bottom">
+                        <div class="media-body">
+                            <h5 class="mt-0 mb-1" th:text="${comment.getUser().getName()}">Username</h5>
+                            <p class="text-muted" th:text="${comment.getComment()}">Comment text</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a th:href="@{'/events'}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Return to Events
+                </a>
+            </div>
         </div>
     </div>
-
-    <a th:href="@{'/events'}" class="btn btn-secondary mt-3">Return</a>
 </div>
 
+<!-- Bootstrap JS and dependencies -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </body>
 </html>

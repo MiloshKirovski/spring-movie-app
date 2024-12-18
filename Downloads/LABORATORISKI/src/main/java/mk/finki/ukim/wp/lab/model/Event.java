@@ -26,7 +26,7 @@ public class Event {
     @ManyToOne
     private Location location;
 
-    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList;
 
     public Event(String name, String description, double popularityScore, int ticketLeft, Location location) {

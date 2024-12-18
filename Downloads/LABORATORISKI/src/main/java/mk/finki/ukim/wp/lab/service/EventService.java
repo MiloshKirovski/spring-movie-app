@@ -11,7 +11,7 @@ public interface EventService {
     List<Event> searchEvents(String text);
 
     boolean bookTicket(String event, int numTicket);
-    Event addEvent(String eventName, String eventDescription, Double popularityScore, int numberTickets, Long locationId);
+    Event addEvent(Long id, String eventName, String eventDescription, Double popularityScore, int numberTickets, Long locationId);
     Event save(Event event);
     Optional<Event> findById(Long id);
     void deleteById(Long id);

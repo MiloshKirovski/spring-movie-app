@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -49,14 +50,27 @@ public class EventController {
     }
 
     @PostMapping("/events/add")
-    public String getAddEventPage(@RequestParam String eventName,
-                           @RequestParam String popularityScore,
-                           @RequestParam String description,
-                           @RequestParam String numberTickets,
-                           @RequestParam String locationId) {
+    public String getAddEventPage(@RequestParam (required = false) Long id,
+                                  @RequestParam String eventName,
+                                  @RequestParam String popularityScore,
+                                  @RequestParam String description,
+                                  @RequestParam String numberTickets,
+                                  @RequestParam String locationId) {
+        List<Event> eventList = eventService.listAll();
+
+        for(Event event : eventList) {
+            if ((Objects.equals(event.getName(), eventName)) && (event.getLocation().getId() == Long.parseLong(locationId))) {
+                return "redirect:/events?error=Event already exists!";
+            }
+        }
+
+        System.out.println("event name is: " + eventName);
 
         try {
-            eventService.addEvent(eventName, description,
+            if (id == null) {
+                id = (long) -1;
+            }
+            eventService.addEvent(id, eventName, description,
                     Double.parseDouble(popularityScore),
                     Integer.parseInt(numberTickets),
                     Long.parseLong(locationId));

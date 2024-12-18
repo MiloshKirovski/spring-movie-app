@@ -3,12 +3,14 @@ package mk.finki.ukim.wp.lab.service.impl;
 import jakarta.transaction.Transactional;
 import mk.finki.ukim.wp.lab.Repository.jpa.EventRepositoryJpa;
 import mk.finki.ukim.wp.lab.Repository.jpa.LocationRepositoryJpa;
+import mk.finki.ukim.wp.lab.model.Comment;
 import mk.finki.ukim.wp.lab.model.Event;
 import mk.finki.ukim.wp.lab.model.Location;
 import mk.finki.ukim.wp.lab.model.exceptions.NoTicketsLeftException;
 import mk.finki.ukim.wp.lab.service.EventService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,11 +61,26 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public Event addEvent(String eventName, String eventDescription, Double popularityScore, int numberTickets, Long locationId) {
+    public Event addEvent(Long id, String eventName, String eventDescription, Double popularityScore, int numberTickets, Long locationId) {
         Optional<Location> location = locationRepository.findById(locationId);
         if(location.isPresent()) {
-            Event event = new Event(eventName, eventDescription, popularityScore, numberTickets, location.get());
-            eventRepository.deleteByName(eventName);
+            Event event;
+            if (eventRepository.findById(id).isPresent()) {
+                List<Comment> commentList = new ArrayList<>();
+                if (eventRepository.findById(id).isPresent()) {
+                    commentList = List.copyOf(eventRepository.findById(id).get().getCommentList());
+                }
+
+                event = new Event(eventName, eventDescription, popularityScore, numberTickets, location.get(), commentList);
+
+                for (Comment comment : commentList) {
+                    comment.setEvent(event);
+                }
+                eventRepository.deleteById(id);
+            } else {
+                event = new Event(eventName, eventDescription, popularityScore, numberTickets, location.get());
+            }
+
             return eventRepository.save(event);
         } else {
             throw new RuntimeException("LOCATION EXCEPTION");

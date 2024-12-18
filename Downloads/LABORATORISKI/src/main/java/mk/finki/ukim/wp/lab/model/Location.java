@@ -22,7 +22,7 @@ public class Location {
 
     private String description;
 
-    @OneToMany(mappedBy = "location", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "location")
     private List<Event> events;
 
     public Location(String name, String address, String capacity, String description) {

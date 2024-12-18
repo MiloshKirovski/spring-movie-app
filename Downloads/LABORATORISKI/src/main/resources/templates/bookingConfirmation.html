@@ -2,46 +2,61 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Booking - Confirmation</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
 </head>
-<body>
-<div class="container mt-5">
-    <header>
-        <h1 class="mb-4">Event Booking Confirmation</h1>
-    </header>
+<body class="bg-light">
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h1 class="h3 mb-0">Event Booking Confirmation</h1>
+                </div>
+                <div class="card-body">
+                    <th:block th:if="${booked} == false">
+                        <div class="alert alert-danger" role="alert">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            There was an error with your booking
+                        </div>
+                    </th:block>
 
-    <th:block th:if="${booked} == false">
-        <div class="alert alert-danger" role="alert" th:text="'There was an error with your booking'"></div>
-    </th:block>
-
-    <th:block th:if="${booked} == true">
-        <table class="table table-bordered">
-            <thead class="thead-dark">
-            <tr>
-                <th colspan="2" class="text-center">Your Booking Status</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td><strong>Attendee Name</strong></td>
-                <td><span th:text="${attendeeName}"></span></td>
-            </tr>
-            <tr>
-                <td><strong>Client IP Address</strong></td>
-                <td><span th:text="${attendeeAddress}"></span></td>
-            </tr>
-            <tr>
-                <td><strong>Booking for Event</strong></td>
-                <td><span th:text="${eventName}"></span></td>
-            </tr>
-            <tr>
-                <td><strong>Number of Tickets</strong></td>
-                <td><span th:text="${numberOfTickets}"></span></td>
-            </tr>
-            </tbody>
-        </table>
-    </th:block>
+                    <th:block th:if="${booked} == true">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <tbody>
+                                <tr>
+                                    <th class="w-50">Attendee Name</th>
+                                    <td><span th:text="${attendeeName}"></span></td>
+                                </tr>
+                                <tr>
+                                    <th>Client IP Address</th>
+                                    <td><span th:text="${attendeeAddress}"></span></td>
+                                </tr>
+                                <tr>
+                                    <th>Booking for Event</th>
+                                    <td><span th:text="${eventName}"></span></td>
+                                </tr>
+                                <tr>
+                                    <th>Number of Tickets</th>
+                                    <td><span th:text="${numberOfTickets}"></span></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center mt-4">
+                            <a href="/events" class="btn btn-primary">Return to Events</a>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Optional JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
